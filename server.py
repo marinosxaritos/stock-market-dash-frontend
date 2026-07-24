@@ -17,6 +17,48 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+def calculate_quarterly_growth(symbol):
+    try:
+        stock = yf.Ticker(symbol)
+        # Αντλούμε τον πίνακα με τα τρίμηνα
+        q_financials = stock.quarterly_financials
+        
+        if q_financials.empty:
+             return "N/A", "N/A"
+
+        rev_growth = "N/A"
+        earn_growth = "N/A"
+
+        # --- 1. Υπολογισμός Revenue Growth (Έσοδα) ---
+        if "Total Revenue" in q_financials.index:
+            revenues = q_financials.loc["Total Revenue"].dropna()
+            # Το yfinance επιστρέφει τα τρίμηνα από το πιο πρόσφατο (index 0) στο παλαιότερο
+            if len(revenues) >= 2:
+                current_rev = revenues.iloc[0]
+                prev_rev = revenues.iloc[1]
+                
+                if prev_rev != 0:
+                    growth = ((current_rev - prev_rev) / abs(prev_rev)) * 100
+                    # Προσθέτουμε + αν είναι θετικό, για να φαίνεται ωραίο στο AI
+                    rev_growth = f"+{growth:.2f}%" if growth > 0 else f"{growth:.2f}%"
+
+        # --- 2. Υπολογισμός Earnings Growth (Καθαρά Κέρδη) ---
+        if "Net Income" in q_financials.index:
+            incomes = q_financials.loc["Net Income"].dropna()
+            if len(incomes) >= 2:
+                current_inc = incomes.iloc[0]
+                prev_inc = incomes.iloc[1]
+                
+                if prev_inc != 0:
+                    growth = ((current_inc - prev_inc) / abs(prev_inc)) * 100
+                    earn_growth = f"+{growth:.2f}%" if growth > 0 else f"{growth:.2f}%"
+
+        return rev_growth, earn_growth
+
+    except Exception as e:
+        print(f"Error calculating growth for {symbol}: {e}")
+        return "N/A", "N/A"
+
 # --- 1. ΡΥΘΜΙΣΗ GROQ ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 groq_client = None
@@ -107,7 +149,7 @@ def analyze_stock():
             val = info.get(key)
             return val if val is not None else default
 
-            # ΝΕΑ βοηθητική συνάρτηση για τα ποσοστά
+        # ΝΕΑ βοηθητική συνάρτηση για τα ποσοστά
         def format_margin(val):
             if isinstance(val, (int, float)):
                 return f"{round(val * 100, 2)}%"
@@ -155,6 +197,9 @@ def analyze_stock():
         raw_trend = hist['Close'].tail(5).tolist() if not hist.empty else []
         recent_trend = [float(round(x, 2)) for x in raw_trend]
 
+        # Υπολογίζουμε τα δικά μας ποσοστά ανάπτυξης (QoQ)
+        calculated_rev_growth, calculated_earn_growth = calculate_quarterly_growth(symbol)
+
         financial_data = {
             "Company Info": {
                 "Symbol": symbol,
@@ -191,8 +236,8 @@ def analyze_stock():
             "Growth & Quarterly Performance": {
                 "Revenue Growth (Annual)": get_safe('revenueGrowth'),
                 "Earnings Growth (Annual)": get_safe('earningsGrowth'),
-                "Quarterly Revenue Growth": get_safe('quarterlyRevenueGrowth'),
-                "Quarterly Earnings Growth": get_safe('quarterlyEarningsGrowth'),
+                "Quarterly Revenue Growth (QoQ)": calculated_rev_growth,
+                "Quarterly Earnings Growth (QoQ)": calculated_earn_growth,
             },
             "Analysts": {
                 "Target Price": get_safe('targetMeanPrice'),
@@ -407,8 +452,6 @@ def get_financials():
     except Exception as e:
         print(f"Financials Error: {e}")
         return jsonify({"error": str(e)}), 500
-    
-import os
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

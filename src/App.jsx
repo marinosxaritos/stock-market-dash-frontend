@@ -58,7 +58,7 @@ const App = () => {
     setDetailsLoading(true);
     try {
       // Καλεί το endpoint /details που φτιάξαμε στο server.py
-      const res = await fetch(`${BASE_URL}/details?symbol=${symbol}`);
+      const res = await fetch(`${BASE_URL}/api/details?symbol=${symbol}`);
       setSelectedDetails(await res.json());
     } catch (e) {
       console.error(e);
@@ -74,7 +74,7 @@ const App = () => {
     setAnalysisLoading(true);
     setAnalysisData("");
     try {
-      const res = await fetch(`${BASE_URL}/analyze`, {
+      const res = await fetch(`${BASE_URL}/api/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ symbol }),

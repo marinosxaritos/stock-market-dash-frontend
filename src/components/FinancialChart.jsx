@@ -26,11 +26,11 @@ const FinancialChart = ({ symbol }) => {
       setError(null);
       try {
         console.log(
-          `--> Fetching: http://127.0.0.1:5000/api/financials?symbol=${symbol}`
+          `--> Fetching: https://stock-market-dash-9wgq.onrender.com/api/financials?symbol=${symbol}`
         );
 
         const res = await fetch(
-          `http://127.0.0.1:5000/api/financials?symbol=${symbol}`
+          `https://stock-market-dash-9wgq.onrender.com/api/financials?symbol=${symbol}`
         );
 
         if (!res.ok) throw new Error("Network response was not ok");

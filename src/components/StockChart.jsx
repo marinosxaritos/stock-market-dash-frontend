@@ -21,7 +21,7 @@ const StockChart = ({ symbol }) => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://127.0.0.1:5000/api/history?symbol=${symbol}&period=${period}`
+          `https://stock-market-dash-9wgq.onrender.com/api/history?symbol=${symbol}&period=${period}`
         );
         const result = await res.json();
         setData(result);
