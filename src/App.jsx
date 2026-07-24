@@ -5,6 +5,7 @@ import FilterInput from "./components/FilterInput";
 import SortSelector from "./components/SortSelector";
 import AnalysisModal from "./components/AnalysisModal";
 import StockDetails from "./components/StockDetails";
+import "./App.css";
 
 const BASE_URL = "https://stock-market-dash-9wgq.onrender.com";
 
