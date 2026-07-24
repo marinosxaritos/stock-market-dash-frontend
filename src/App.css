@@ -40,3 +40,65 @@
 .read-the-docs {
   color: #888;
 }
+
+/* =========================================
+   1. ΒΑΣΙΚΟ LAYOUT (Για Υπολογιστές - Desktop)
+   ========================================= */
+
+/* Στοιχίζει τα φίλτρα πάνω-πάνω ωραία το ένα δίπλα στο άλλο */
+.top-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap; 
+}
+
+/* Χωρίζει την οθόνη σε 2 μέρη (Αριστερά κάρτες - Δεξιά Details) */
+.dashboard-layout {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+/* Ο χώρος για τις κάρτες πιάνει όλο τον διαθέσιμο ελεύθερο χώρο */
+.main-content {
+  flex: 1; 
+}
+
+/* Φτιάχνει ένα έξυπνο πλέγμα για τις κάρτες (μπαίνουν δίπλα-δίπλα αυτόματα) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Το δεξί πάνελ (Details) έχει σταθερό πλάτος και μένει καρφιτσωμένο (sticky) */
+.sidebar {
+  width: 380px;
+  position: sticky;
+  top: 20px;
+}
+
+/* =========================================
+   2. RESPONSIVE LAYOUT (Για Κινητά - Mobile)
+   ========================================= */
+
+@media (max-width: 768px) {
+  /* Τα φίλτρα μπαίνουν το ένα κάτω από το άλλο */
+  .top-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Η οθόνη χωρίζεται σε στήλη (το ένα κάτω από το άλλο αντί για δίπλα-δίπλα) */
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  /* Το δεξί πάνελ πιάνει πλέον όλη την οθόνη του κινητού */
+  .sidebar {
+    width: 100%;
+    position: static; /* Ακυρώνει το sticky για να μπορείς να σκρολάρεις */
+    order: -1; /* MAGICAL TRICK: Φέρνει το Details Panel ΠΑΝΩ από τις κάρτες στο κινητό! */
+  }
+}
