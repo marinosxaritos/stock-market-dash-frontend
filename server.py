@@ -367,8 +367,12 @@ def get_details():
             "volume": info.get('volume', 0),
             "marketCap": info.get('marketCap', 0),
             "peRatio": info.get('trailingPE', 'N/A'),
-            "dividendYield": info.get('dividendYield', 'N/A'),
-            "beta": info.get('beta', 'N/A')
+            "beta": info.get('beta', 'N/A'),
+            # --- ΤΑ ΝΕΑ ΜΑΣ ΔΕΔΟΜΕΝΑ ΕΔΩ ---
+            "recommendation": info.get("recommendationKey", "N/A"),
+            "dividendYield": info.get("dividendYield", info.get("trailingAnnualDividendYield")),
+            "eps": info.get("trailingEps", info.get("forwardEps", "N/A")),
+            "institutionalOwnership": info.get("heldPercentInstitutions")
         }
         return jsonify(details)
     except Exception as e:

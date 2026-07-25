@@ -3,10 +3,8 @@ import StockChart from "./StockChart";
 import FinancialChart from "./FinancialChart";
 
 const StockDetails = ({ details, loading }) => {
-  // State για το Read More / Show Less
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Όταν αλλάζει η επιλεγμένη μετοχή, κλείνουμε ξανά το κείμενο αυτόματα
   useEffect(() => {
     setIsExpanded(false);
   }, [details?.symbol]);
@@ -44,25 +42,26 @@ const StockDetails = ({ details, loading }) => {
 
       <hr style={{ borderColor: "#30363d", margin: "20px 0" }} />
 
-      {/* Grid Stats */}
+      {/* Grid Stats - Τώρα με τα νέα επαγγελματικά δεδομένα! */}
       <div className="stats-grid">
-        <StatRow
-          label="Day Range"
-          value={`${details.dayLow} - ${details.dayHigh}`}
-        />
-        <StatRow
-          label="52 Week Range"
-          value={`${details.fiftyTwoWeekLow} - ${details.fiftyTwoWeekHigh}`}
-        />
+        <StatRow label="Day Range" value={`${details.dayLow} - ${details.dayHigh}`} />
+        <StatRow label="52 Wk Range" value={`${details.fiftyTwoWeekLow} - ${details.fiftyTwoWeekHigh}`} />
         <StatRow label="Market Cap" value={formatNumber(details.marketCap)} />
         <StatRow label="Volume" value={formatNumber(details.volume)} />
         <StatRow label="P/E Ratio" value={details.peRatio} />
-        <StatRow label="Beta (Vol)" value={details.beta} />
+        <StatRow label="EPS (TTM)" value={details.eps !== "N/A" ? `$${details.eps}` : "-"} />
+        <StatRow label="Div Yield" value={formatPercent(details.dividendYield)} />
+        <StatRow label="Inst. Own" value={formatPercent(details.institutionalOwnership)} />
+        <StatRow 
+          label="Wall St. Says" 
+          value={formatRecommendation(details.recommendation)} 
+          highlight={true} 
+        />
       </div>
 
       <hr style={{ borderColor: "#30363d", margin: "20px 0" }} />
 
-      {/* Description με Read More / Show Less */}
+      {/* Description */}
       <div className="details-desc">
         <h3>About</h3>
         <p style={{ lineHeight: "1.6" }}>
@@ -88,7 +87,7 @@ const StockDetails = ({ details, loading }) => {
         </p>
       </div>
 
-      {/* --- ΕΔΩ ΜΠΑΙΝΕΙ ΤΟ ΓΡΑΦΗΜΑ --- */}
+      {/* Charts */}
       <div style={{ marginBottom: "20px" }}>
         <StockChart symbol={details.symbol} />
       </div>
@@ -98,8 +97,10 @@ const StockDetails = ({ details, loading }) => {
   );
 };
 
+// --- HELPER COMPONENTS & FUNCTIONS ---
+
 // Helper Component για τις γραμμές
-const StatRow = ({ label, value }) => (
+const StatRow = ({ label, value, highlight }) => (
   <div
     style={{
       display: "flex",
@@ -108,16 +109,33 @@ const StatRow = ({ label, value }) => (
     }}
   >
     <span style={{ color: "#8b949e" }}>{label}</span>
-    <span style={{ fontWeight: "bold", color: "#e6edf3" }}>{value}</span>
+    <span style={{ 
+      fontWeight: "bold", 
+      color: highlight ? "cyan" : "#e6edf3",
+      textTransform: highlight ? "capitalize" : "none"
+    }}>
+      {value}
+    </span>
   </div>
 );
 
-// Helper για μεγάλα νούμερα (Billions/Millions)
+// Formatters
 const formatNumber = (num) => {
   if (!num) return "-";
   if (num > 1e9) return (num / 1e9).toFixed(2) + " B";
   if (num > 1e6) return (num / 1e6).toFixed(2) + " M";
   return num.toLocaleString();
+};
+
+const formatPercent = (val) => {
+  if (!val && val !== 0) return "-";
+  return (val * 100).toFixed(2) + "%";
+};
+
+const formatRecommendation = (rec) => {
+  if (!rec || rec === "N/A" || rec === "none") return "-";
+  // Μετατρέπει π.χ. το "strong_buy" σε "Strong Buy"
+  return rec.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
 export default StockDetails;
