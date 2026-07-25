@@ -84,25 +84,37 @@
    ========================================= */
 
    @media (max-width: 768px) {
-    /* Τα φίλτρα μπαίνουν το ένα κάτω από το άλλο με κενό (αέρα) στα πλάγια */
+    /* Μειώνουμε το τεράστιο περιθώριο της React για να χωράνε οι κάρτες */
+    #root {
+      padding: 1rem;
+      max-width: 100vw;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+  
     .top-controls {
       flex-direction: column;
       align-items: stretch;
-      padding: 0 15px; /* Προσθέτει κενό δεξιά-αριστερά */
     }
   
-    /* Η οθόνη σε στήλη, με κενό για να μην κολλάνε οι κάρτες στα όρια του κινητού */
     .dashboard-layout {
       flex-direction: column;
-      padding: 0 15px; /* Προσθέτει κενό δεξιά-αριστερά */
+      gap: 20px;
     }
   
-    /* Το δεξί πάνελ ξαναπάει ΠΑΝΩ και δεν ξεχειλώνει */
+    /* Αναγκάζουμε το πάνελ να μην ξεπερνάει το μέγεθος της οθόνης */
     .sidebar {
       width: 100%;
+      max-width: 100%;
       position: static;
-      order: -1; /* Το κρατάμε ΠΑΝΩ από τις μετοχές! */
-      margin-bottom: 25px; /* Αφήνει λίγο χώρο κάτω του πριν αρχίσουν οι μετοχές */
-      box-sizing: border-box; /* Μαγική ιδιότητα για να μην βγαίνει εκτός οθόνης */
+      order: -1; 
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+  
+    /* Σιγουρευόμαστε ότι κανένα εσωτερικό στοιχείο (π.χ. κείμενα) δεν την τεντώνει */
+    .sidebar * {
+      max-width: 100%;
+      box-sizing: border-box;
     }
   }
