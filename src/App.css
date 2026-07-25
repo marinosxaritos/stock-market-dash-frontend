@@ -105,7 +105,7 @@
       gap: 15px !important;
     }
   
-    /* 3. Μαζεύουμε τη διάταξη να πιάνει ΑΚΡΙΒΩΣ την οθόνη, με ένα μικρό κενό 10px γύρω-γύρω */
+    /* 3. Μαζεύουμε τη διάταξη να πιάνει ΑΚΡΙΒΩΣ την οθόνη */
     .dashboard-layout {
       display: flex !important;
       flex-direction: column !important;
@@ -115,14 +115,21 @@
       box-sizing: border-box !important;
     }
   
-    /* 4. Βάζουμε το πάνελ της μετοχής (UNH) πάνω-πάνω και του απαγορεύουμε να τεντώσει */
+    /* 4. Η ΛΥΣΗ ΓΙΑ ΤΑ ΣΤΡΙΜΩΓΜΕΝΑ ΓΡΑΜΜΑΤΑ */
     .sidebar {
       width: 100% !important;
       max-width: 100% !important;
       order: -1 !important;
-      margin: 0 0 20px 0 !important; /* Αφήνουμε μόνο 20px κενό από κάτω */
-      padding: 0 !important;
+      margin: 0 0 20px 0 !important; 
+      padding: 20px !important; /* Δίνουμε 20px "αέρα" εσωτερικά! */
       box-sizing: border-box !important;
+      overflow-x: hidden !important; 
+    }
+  
+    /* Βοηθητικό: Αν τα νούμερα στο Day Range είναι τεράστια, τα βάζει να σπάσουν ομαλά */
+    .sidebar span, .sidebar p {
+      white-space: normal !important;
+      word-break: break-word !important;
     }
   
     /* 5. Το ίδιο και για τη λίστα με τις κάρτες */
