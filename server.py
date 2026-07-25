@@ -29,6 +29,18 @@ def calculate_quarterly_growth(symbol):
         rev_growth = "N/A"
         earn_growth = "N/A"
 
+        # Βοηθητική συνάρτηση για τον υπολογισμό και τον εντοπισμό ανωμαλιών
+        def calc_growth_str(current, prev):
+            if prev != 0:
+                growth = ((current - prev) / abs(prev)) * 100
+                if growth > 500:
+                    return f"+{growth:.2f}% (Anomaly due to low base)"
+                elif growth > 0:
+                    return f"+{growth:.2f}%"
+                else:
+                    return f"{growth:.2f}%"
+            return "N/A"
+
         # --- 1. Υπολογισμός Revenue Growth (Έσοδα) ---
         if "Total Revenue" in q_financials.index:
             revenues = q_financials.loc["Total Revenue"].dropna()
@@ -36,11 +48,7 @@ def calculate_quarterly_growth(symbol):
             if len(revenues) >= 2:
                 current_rev = revenues.iloc[0]
                 prev_rev = revenues.iloc[1]
-                
-                if prev_rev != 0:
-                    growth = ((current_rev - prev_rev) / abs(prev_rev)) * 100
-                    # Προσθέτουμε + αν είναι θετικό, για να φαίνεται ωραίο στο AI
-                    rev_growth = f"+{growth:.2f}%" if growth > 0 else f"{growth:.2f}%"
+                rev_growth = calc_growth_str(current_rev, prev_rev)
 
         # --- 2. Υπολογισμός Earnings Growth (Καθαρά Κέρδη) ---
         if "Net Income" in q_financials.index:
@@ -48,10 +56,7 @@ def calculate_quarterly_growth(symbol):
             if len(incomes) >= 2:
                 current_inc = incomes.iloc[0]
                 prev_inc = incomes.iloc[1]
-                
-                if prev_inc != 0:
-                    growth = ((current_inc - prev_inc) / abs(prev_inc)) * 100
-                    earn_growth = f"+{growth:.2f}%" if growth > 0 else f"{growth:.2f}%"
+                earn_growth = calc_growth_str(current_inc, prev_inc)
 
         return rev_growth, earn_growth
 
@@ -149,22 +154,33 @@ def analyze_stock():
             val = info.get(key)
             return val if val is not None else default
 
-        # ΝΕΑ βοηθητική συνάρτηση για τα ποσοστά
-        def format_margin(val):
+        # ΝΕΑ βοηθητική συνάρτηση για τα ποσοστά (περιθώρια & ετήσια ανάπτυξη)
+        def format_percent(val):
             if isinstance(val, (int, float)):
-                return f"{round(val * 100, 2)}%"
+                pct = val * 100
+                if pct > 500:
+                    return f"+{round(pct, 2)}% (Anomaly due to low base)"
+                elif pct > 0:
+                    return f"+{round(pct, 2)}%"
+                else:
+                    return f"{round(pct, 2)}%"
             return "N/A"
 
-        def format_market_cap(val):
+        # ΝΕΑ βοηθητική συνάρτηση για μεγάλα ποσά ($B, $M) που υποστηρίζει και αρνητικά
+        def format_large_money(val):
             if isinstance(val, (int, float)):
-                if val >= 1_000_000_000_000:
-                    return f"${round(val / 1_000_000_000_000, 2)}T"
-                elif val >= 1_000_000_000:
-                    return f"${round(val / 1_000_000_000, 2)}B"
-                elif val >= 1_000_000:
-                    return f"${round(val / 1_000_000, 2)}M"
+                is_negative = val < 0
+                abs_val = abs(val)
+                sign = "-" if is_negative else ""
+                
+                if abs_val >= 1_000_000_000_000:
+                    return f"{sign}${round(abs_val / 1_000_000_000_000, 2)}T"
+                elif abs_val >= 1_000_000_000:
+                    return f"{sign}${round(abs_val / 1_000_000_000, 2)}B"
+                elif abs_val >= 1_000_000:
+                    return f"{sign}${round(abs_val / 1_000_000, 2)}M"
                 else:
-                    return f"${val:,.2f}"
+                    return f"{sign}${abs_val:,.2f}"
             return "N/A"
 
         peg_ratio = get_safe('pegRatio', None)
@@ -213,7 +229,7 @@ def analyze_stock():
             },
             "Market Data": {
                 "Price": current_price,
-                "Market Cap": format_market_cap(get_safe('marketCap', None)),
+                "Market Cap": format_large_money(get_safe('marketCap', None)),
             },
             "Recent News": latest_news,
             "Valuation": {
@@ -224,18 +240,18 @@ def analyze_stock():
                 "P/B (Price to Book)": get_safe('priceToBook'),
             },
             "Profitability & Margins": {
-                "Gross Margin": get_safe('grossMargins'),
-                "Operating Margin": get_safe('operatingMargins'),
-                "Profit Margin": get_safe('profitMargins'),
+                "Gross Margin": format_percent(get_safe('grossMargins')),
+                "Operating Margin": format_percent(get_safe('operatingMargins')),
+                "Profit Margin": format_percent(get_safe('profitMargins')),
             },
             "Cash Flow & Debt": {
-                "Free Cash Flow": get_safe('freeCashflow'),
-                "Total Cash": get_safe('totalCash'),
-                "Total Debt": get_safe('totalDebt'),
+                "Free Cash Flow": format_large_money(get_safe('freeCashflow')),
+                "Total Cash": format_large_money(get_safe('totalCash')),
+                "Total Debt": format_large_money(get_safe('totalDebt')),
             },
             "Growth & Quarterly Performance": {
-                "Revenue Growth (Annual)": get_safe('revenueGrowth'),
-                "Earnings Growth (Annual)": get_safe('earningsGrowth'),
+                "Revenue Growth (Annual)": format_percent(get_safe('revenueGrowth')),
+                "Earnings Growth (Annual)": format_percent(get_safe('earningsGrowth')),
                 "Quarterly Revenue Growth (QoQ)": calculated_rev_growth,
                 "Quarterly Earnings Growth (QoQ)": calculated_earn_growth,
             },
