@@ -84,44 +84,53 @@
    ========================================= */
 
    @media (max-width: 768px) {
-    /* Μαζεύουμε το γενικό κενό της οθόνης */
-    #root {
-      padding: 1rem 0.5rem; /* Ελάχιστο κενό στα πλάγια της οθόνης */
-      max-width: 100vw;
-      overflow-x: hidden;
+    /* 1. Αφαιρούμε τα αόρατα κενά που σπρώχνουν την εφαρμογή δεξιά */
+    body, html, #root {
+      overflow-x: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      max-width: 100vw !important;
     }
   
+    /* 2. Κεντράρουμε τα φίλτρα ώστε να μην είναι στραβά */
     .top-controls {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 0 10px;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      padding: 15px !important;
+      box-sizing: border-box !important;
+      gap: 15px !important;
     }
   
+    /* 3. Μαζεύουμε τη διάταξη να πιάνει ΑΚΡΙΒΩΣ την οθόνη, με ένα μικρό κενό 10px γύρω-γύρω */
     .dashboard-layout {
-      flex-direction: column;
-      gap: 20px;
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 10px !important; 
+      box-sizing: border-box !important;
     }
   
-    /* Το Πάνελ */
+    /* 4. Βάζουμε το πάνελ της μετοχής (UNH) πάνω-πάνω και του απαγορεύουμε να τεντώσει */
     .sidebar {
-      width: 100%;
-      max-width: 100%;
-      position: static;
-      order: -1; 
+      width: 100% !important;
+      max-width: 100% !important;
+      order: -1 !important;
+      margin: 0 0 20px 0 !important; /* Αφήνουμε μόνο 20px κενό από κάτω */
+      padding: 0 !important;
+      box-sizing: border-box !important;
     }
   
-    /* Η ΛΥΣΗ: Στοχεύουμε την ίδια την κάρτα (το μαύρο κουτί) */
-    .card {
-      padding: 1.5rem 1rem !important; /* Μειώνουμε το τεράστιο κενό που είχε από μάνα του */
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-  
-    /* Αναγκάζουμε τα τεράστια κείμενα/νούμερα να "σπάσουν" αντί να τεντώνουν την κάρτα */
-    .sidebar * {
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      white-space: normal !important;
+    /* 5. Το ίδιο και για τη λίστα με τις κάρτες */
+    .main-content {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
     }
   }
