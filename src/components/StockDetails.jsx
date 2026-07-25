@@ -1,7 +1,16 @@
+import { useState, useEffect } from "react";
 import StockChart from "./StockChart";
 import FinancialChart from "./FinancialChart";
 
 const StockDetails = ({ details, loading }) => {
+  // State για το Read More / Show Less
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Όταν αλλάζει η επιλεγμένη μετοχή, κλείνουμε ξανά το κείμενο αυτόματα
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [details?.symbol]);
+
   if (loading)
     return <div className="details-panel loading">Loading data...</div>;
 
@@ -53,10 +62,30 @@ const StockDetails = ({ details, loading }) => {
 
       <hr style={{ borderColor: "#30363d", margin: "20px 0" }} />
 
-      {/* Description */}
+      {/* Description με Read More / Show Less */}
       <div className="details-desc">
         <h3>About</h3>
-        <p>{details.description}</p>
+        <p style={{ lineHeight: "1.6" }}>
+          {!isExpanded && details.description?.length > 150
+            ? `${details.description.slice(0, 150)}...`
+            : details.description || "No description available."}
+          
+          {details.description?.length > 150 && (
+            <span
+              onClick={() => setIsExpanded(!isExpanded)}
+              style={{
+                color: "cyan",
+                cursor: "pointer",
+                marginLeft: "8px",
+                fontWeight: "bold",
+                fontSize: "0.9em",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {isExpanded ? "Show less" : "Read more"}
+            </span>
+          )}
+        </p>
       </div>
 
       {/* --- ΕΔΩ ΜΠΑΙΝΕΙ ΤΟ ΓΡΑΦΗΜΑ --- */}
