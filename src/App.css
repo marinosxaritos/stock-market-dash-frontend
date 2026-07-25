@@ -84,17 +84,17 @@
    ========================================= */
 
    @media (max-width: 768px) {
-    /* Μειώνουμε το τεράστιο περιθώριο της React για να χωράνε οι κάρτες */
+    /* Μαζεύουμε το γενικό κενό της οθόνης */
     #root {
-      padding: 1rem;
+      padding: 1rem 0.5rem; /* Ελάχιστο κενό στα πλάγια της οθόνης */
       max-width: 100vw;
-      box-sizing: border-box;
       overflow-x: hidden;
     }
   
     .top-controls {
       flex-direction: column;
       align-items: stretch;
+      padding: 0 10px;
     }
   
     .dashboard-layout {
@@ -102,19 +102,26 @@
       gap: 20px;
     }
   
-    /* Αναγκάζουμε το πάνελ να μην ξεπερνάει το μέγεθος της οθόνης */
+    /* Το Πάνελ */
     .sidebar {
       width: 100%;
       max-width: 100%;
       position: static;
       order: -1; 
-      margin-bottom: 10px;
+    }
+  
+    /* Η ΛΥΣΗ: Στοχεύουμε την ίδια την κάρτα (το μαύρο κουτί) */
+    .card {
+      padding: 1.5rem 1rem !important; /* Μειώνουμε το τεράστιο κενό που είχε από μάνα του */
+      width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
     }
   
-    /* Σιγουρευόμαστε ότι κανένα εσωτερικό στοιχείο (π.χ. κείμενα) δεν την τεντώνει */
+    /* Αναγκάζουμε τα τεράστια κείμενα/νούμερα να "σπάσουν" αντί να τεντώνουν την κάρτα */
     .sidebar * {
-      max-width: 100%;
-      box-sizing: border-box;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      white-space: normal !important;
     }
   }
