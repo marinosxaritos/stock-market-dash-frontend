@@ -29,16 +29,16 @@ def calculate_quarterly_growth(symbol):
         rev_growth = "N/A"
         earn_growth = "N/A"
 
-        # Βοηθητική συνάρτηση για τον υπολογισμό και τον εντοπισμό ανωμαλιών
+        # Βοηθητική συνάρτηση για τον υπολογισμό και τον εντοπισμό ανωμαλιών (ΜΕ ΚΟΜΜΑ ΣΤΙΣ ΧΙΛΙΑΔΕΣ)
         def calc_growth_str(current, prev):
             if prev != 0:
                 growth = ((current - prev) / abs(prev)) * 100
                 if growth > 500:
-                    return f"+{growth:.2f}% (Anomaly due to low base)"
+                    return f"+{growth:,.2f}% (Anomaly due to low base)"
                 elif growth > 0:
-                    return f"+{growth:.2f}%"
+                    return f"+{growth:,.2f}%"
                 else:
-                    return f"{growth:.2f}%"
+                    return f"{growth:,.2f}%"
             return "N/A"
 
         # --- 1. Υπολογισμός Revenue Growth (Έσοδα) ---
@@ -154,19 +154,19 @@ def analyze_stock():
             val = info.get(key)
             return val if val is not None else default
 
-        # ΝΕΑ βοηθητική συνάρτηση για τα ποσοστά (περιθώρια & ετήσια ανάπτυξη)
+        # ΝΕΑ βοηθητική συνάρτηση για τα ποσοστά (ΜΕ ΚΟΜΜΑ ΣΤΙΣ ΧΙΛΙΑΔΕΣ)
         def format_percent(val):
             if isinstance(val, (int, float)):
                 pct = val * 100
                 if pct > 500:
-                    return f"+{round(pct, 2)}% (Anomaly due to low base)"
+                    return f"+{pct:,.2f}% (Anomaly due to low base)"
                 elif pct > 0:
-                    return f"+{round(pct, 2)}%"
+                    return f"+{pct:,.2f}%"
                 else:
-                    return f"{round(pct, 2)}%"
+                    return f"{pct:,.2f}%"
             return "N/A"
 
-        # ΝΕΑ βοηθητική συνάρτηση για μεγάλα ποσά ($B, $M) που υποστηρίζει και αρνητικά
+        # ΝΕΑ βοηθητική συνάρτηση για μεγάλα ποσά ($B, $M)
         def format_large_money(val):
             if isinstance(val, (int, float)):
                 is_negative = val < 0
