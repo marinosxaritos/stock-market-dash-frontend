@@ -89,17 +89,24 @@ const App = () => {
     }
   };
 
-  const sortedStocks = [...stocks].slice(0, limit).sort((a, b) => {
-    // ... (ίδιο sorting logic με πριν) ...
+  const sortedStocks = [...stocks].sort((a, b) => {
     switch (sortBy) {
       case "market_cap_desc":
         return (b.marketCap || 0) - (a.marketCap || 0);
+      case "market_cap_asc":
+        return (a.marketCap || 0) - (b.marketCap || 0);
       case "price_desc":
         return (b.price || 0) - (a.price || 0);
+      case "price_asc":
+        return (a.price || 0) - (b.price || 0);
+      case "change_desc":
+        return (b.changesPercentage || 0) - (a.changesPercentage || 0);
+      case "change_asc":
+        return (a.changesPercentage || 0) - (b.changesPercentage || 0);
       default:
         return 0;
     }
-  });
+  }).slice(0, limit);
 
   return (
     <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "20px" }}>
