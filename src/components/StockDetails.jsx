@@ -66,11 +66,11 @@ const StockDetails = ({ details, loading }) => {
       <div className="details-desc">
         <h3>About</h3>
         <p style={{ lineHeight: "1.6" }}>
-          {!isExpanded && details.description?.length > 150
-            ? `${details.description.slice(0, 150)}...`
+          {!isExpanded && details.description?.length > 250
+            ? `${details.description.slice(0, 250)}...`
             : details.description || "No description available."}
           
-          {details.description?.length > 500 && (
+          {details.description?.length > 250 && (
             <span
               onClick={() => setIsExpanded(!isExpanded)}
               style={{
