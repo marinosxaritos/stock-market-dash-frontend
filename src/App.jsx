@@ -57,6 +57,9 @@ const App = () => {
   // --- 1. OTAN ΠΑΤΑΣ ΤΗΝ ΚΑΡΤΑ (SIDEBAR) ---
   const handleCardClick = async (symbol) => {
     setDetailsLoading(true);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    
     try {
       // Καλεί το endpoint /details που φτιάξαμε στο server.py
       const res = await fetch(`${BASE_URL}/api/details?symbol=${symbol}`);
