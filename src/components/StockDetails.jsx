@@ -56,7 +56,7 @@ const StockDetails = ({ details, loading }) => {
       {/* Description */}
       <div className="details-desc">
         <h3>About</h3>
-        <p>{details.description.substring(0, 400)}...</p>
+        <p>{details.description}</p>
       </div>
 
       {/* --- ΕΔΩ ΜΠΑΙΝΕΙ ΤΟ ΓΡΑΦΗΜΑ --- */}

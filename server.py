@@ -375,7 +375,7 @@ def get_details():
         print(f"Details Error: {e}")
         return jsonify({"error": str(e)}), 500
     
-    # --- ENDPOINT 4: ΙΣΤΟΡΙΚΟ ΤΙΜΩΝ ΓΙΑ CHART ---
+# --- ENDPOINT 4: ΙΣΤΟΡΙΚΟ ΤΙΜΩΝ ΓΙΑ CHART ---
 @app.route('/api/history', methods=['GET'])
 def get_history():
     symbol = request.args.get('symbol')
@@ -390,6 +390,9 @@ def get_history():
         ticker = yf.Ticker(symbol)
         # Παίρνουμε ιστορικό (μόνο κλείσιμο μας νοιάζει για απλό chart)
         hist = ticker.history(period=period)
+        
+        # --- 🚀 Η ΛΥΣΗ ΓΙΑ ΤΟ ΓΡΑΦΗΜΑ: Διαγράφουμε τα NaN ---
+        hist = hist.dropna(subset=['Close'])
         
         # Μετατροπή σε λίστα
         data = []
@@ -435,7 +438,6 @@ def get_financials():
                 year = date.strftime('%Y')
                 
                 # Helper για να βρούμε τη σωστή γραμμή (Revenue/Income)
-                # Ψάχνουμε αν υπάρχει κάποιο από αυτά τα ονόματα στο index
                 def get_row_value(df, possible_names, col_date):
                     for name in possible_names:
                         if name in df.index:
