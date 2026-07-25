@@ -121,6 +121,7 @@ const FinancialChart = ({ symbol }) => {
                 border: "none",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
+              labelStyle={{ color: "#161b22", fontWeight: "bold" }}
             />
             <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
             <Bar

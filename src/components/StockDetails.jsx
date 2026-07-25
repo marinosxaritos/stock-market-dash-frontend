@@ -70,7 +70,7 @@ const StockDetails = ({ details, loading }) => {
             ? `${details.description.slice(0, 150)}...`
             : details.description || "No description available."}
           
-          {details.description?.length > 150 && (
+          {details.description?.length > 250 && (
             <span
               onClick={() => setIsExpanded(!isExpanded)}
               style={{
